@@ -12,9 +12,35 @@ use Illuminate\Support\Facades\Auth;
 class ContactController extends Controller
 {
     // Display a listing of the contacts
-    public function index()
+    public function index(Request $request)
     {
-        $admin = Contact::orderBy("name", "asc")->where('trash', false)->get();
+        // Get the contact type id from the URL query string
+        $type = $request->get('type');
+
+        // Query for contacts
+        $contacts = Contact::query();
+
+        // If a contact type is selected, filter the contacts by that type
+        if ($type) {
+            $contacts = $contacts->whereHas('contactTypes', function ($query) use ($type) {
+                $query->where('contact_type_id', $type);
+            });
+        }
+
+        // Optionally, handle search functionality if needed
+        $search = $request->get('search');
+        if ($search) {
+            $contacts = $contacts->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%")
+                ->orWhere('designation', 'like', "%{$search}%")
+                ->orWhere('organization', 'like', "%{$search}%");
+        }
+
+        // Paginate the results
+        $contacts = $contacts->paginate(10);  // Adjust pagination as needed
+
+        $admin = $contacts;
         $contactTypes = ContactTypes::all();
         $roles = Role::orderBy("id", "asc")->get();
         return view('admin.pages.contact.index', [

@@ -49,6 +49,15 @@
                                     </li>
                                 @endif
                             @endforeach
+                            {{-- Contact Types --}}
+                            @foreach ($contactTypes as $contactType)
+                                <li>
+                                    <a href="{{ route('contact.index', ['type' => $contactType->id]) }}"
+                                        class="{{ request()->query('type') == $contactType->id ? 'active' : '' }}">
+                                        {{ $contactType->name }}
+                                    </a>
+                                </li>
+                            @endforeach
                         </ul>
                     </li>
                 @endif
