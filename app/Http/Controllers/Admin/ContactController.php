@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\ContactTypes;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,13 @@ class ContactController extends Controller
     public function index()
     {
         $admin = Contact::orderBy("name", "asc")->where('trash', false)->get();
+        $contactTypes = ContactTypes::all();
         $roles = Role::orderBy("id", "asc")->get();
         return view('admin.pages.contact.index', [
             'all_admin' => $admin,
             'form_type'  => 'create',
             'roles'  => $roles,
+            'contactTypes' => $contactTypes,
         ]);
     }
 
@@ -32,9 +35,11 @@ class ContactController extends Controller
             'phone' => 'required|string|max:20',
             'designation' => 'nullable|string|max:255',
             'organization' => 'nullable|string|max:255',
+            'contact_type_id' => 'required|array',
+            'contact_type_id.*' => 'exists:contact_types,id',
         ]);
 
-        Contact::create([
+        $contact = Contact::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -44,26 +49,43 @@ class ContactController extends Controller
             'created_by' => Auth::guard('admin')->user()->fast_name,
         ]);
 
+        // Attach selected contact types to pivot table
+        $contact->contactTypes()->attach($request->contact_type_id);
+
         return redirect()->route('contact.index')->with('success', 'Contact added successfully!');
     }
 
     // Show the form for editing a contact
     public function edit($id)
     {
+        // Fetch all contacts in alphabetical order (if necessary for listing)
         $admin = Contact::orderBy("name", "asc")->get();
-        $user = Contact::findOrFail($id);
+
+        // Find the contact by id and eager load the contactTypes relationship
+        $user = Contact::with('contactTypes')->findOrFail($id);
+
+        // Fetch all contact types
+        $contactTypes = ContactTypes::orderBy('name', 'asc')->get(); // fetch all types
+
+        // Fetch any other necessary data (like roles if needed)
         $role = Role::orderBy("name", "asc")->get();
+
+        // Pass the contact, contact types, and roles to the view
         return view('admin.pages.contact.index', [
             'all_admin' => $admin,
-            'form_type'  => 'edit',
-            'edit'  => $user,
-            'roles'  => $role,
+            'form_type' => 'edit',
+            'edit' => $user,
+            'roles' => $role,
+            'contactTypes' => $contactTypes, // pass all types
         ]);
     }
+
+
 
     // Update a contact
     public function update(Request $request, $id)
     {
+        // Validate the input fields
         $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
@@ -71,10 +93,14 @@ class ContactController extends Controller
             'phone' => 'required|string|max:20',
             'designation' => 'nullable|string|max:255',
             'organization' => 'nullable|string|max:255',
+            'contact_type_id' => 'required|array', // Ensure at least one contact type is selected
+            'contact_type_id.*' => 'exists:contact_types,id', // Ensure selected types are valid
         ]);
 
+        // Find the contact to update
         $update_date = Contact::findOrFail($id);
 
+        // Update the contact fields
         $update_date->update([
             'name' => $request->name,
             'email' => $request->email,
@@ -85,10 +111,13 @@ class ContactController extends Controller
             'updated_by' => Auth::guard('admin')->user()->fast_name,
         ]);
 
-        return back()->with('success', 'User updated successfully');
+        // Sync the selected contact types (this will overwrite the existing relationships)
+        $update_date->contactTypes()->sync($request->contact_type_id);
 
+        // Redirect back with success message
         return redirect()->route('contact.index')->with('success', 'Contact updated successfully!');
     }
+
 
     // Soft delete the specified contact
     public function destroy($id)

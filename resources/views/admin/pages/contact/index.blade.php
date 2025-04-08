@@ -30,6 +30,7 @@
                                     <th>Created By</th>
                                     <th>Updated By</th>
                                     {{-- <th>Status</th> --}}
+                                    <th>Type</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -53,43 +54,26 @@
                                             <td>{{ $user->created_by }}</td>
                                             <td>{{ $user->updated_by }}</td>
 
-                                            {{-- <td>
-                                                @if ($user->status)
-                                                    <span class="badge badge-success">Active User</span>
-                                                    @if (Auth::guard('admin')->user()->role->name == 'Admin')
-                                                        <a class="text-danger"
-                                                            href="{{ route('admin.status.update', $user->id) }}"><i
-                                                                class="fa fa-times" aria-hidden="true"></i></a>
-                                                    @else
-                                                    @endif
-                                                @else
-                                                    <span class="badge badge-danger">Blocked User</span>
-                                                    @if (Auth::guard('admin')->user()->role->name == 'Admin')
-                                                        <a class="text-success"
-                                                            href="{{ route('admin.status.update', $user->id) }}"><i
-                                                                class="fa fa-check" aria-hidden="true"></i></a>
-                                                    @else
-                                                    @endif
-                                                @endif
-                                            </td> --}}
+
+                                            {{-- Show contact types --}}
                                             <td>
-                                                {{-- <a class="btn btn-sm btn-info" href=""><i class="fa fa-eye"
-                                            aria-hidden="true"></i></a> --}}
+                                                @foreach ($user->contactTypes as $contactType)
+                                                    <span class="badge badge-info">{{ $contactType->name }}</span>
+                                                @endforeach
+                                            </td>
+
+                                            <td>
                                                 <a class="btn btn-sm btn-warning"
-                                                    href="{{ route('contact.edit', $user->id) }}"><i class="fa fa-edit"
-                                                        aria-hidden="true"></i></a>
+                                                    href="{{ route('contact.edit', $user->id) }}">
+                                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                                </a>
                                                 @if ($form_type == 'create')
-                                                    {{-- <form class="d-inline delete-form"
-                                        action="{{ route('admin-user.destroy', $user->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger"><i class="fa fa-trash"
-                                                aria-hidden="true"></i></button>
-                                    </form> --}}
                                                     <a class="btn btn-sm btn-danger"
-                                                        href="{{ route('contact.trash.update', $user->id) }}"><i
-                                                            class="fa fa-trash" aria-hidden="true"></i></a>
+                                                        href="{{ route('contact.trash.update', $user->id) }}">
+                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                    </a>
                                                 @endif
+                                            </td>
                                             </td>
                                         </tr>
                                     @endif
@@ -98,8 +82,8 @@
                                         <td class="text-danger text-center" colspan="9">No Data Found</td>
                                     </tr>
                                 @endforelse
-
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -146,6 +130,35 @@
                                     autofocus>
                             </div>
 
+                            {{-- <div class="form-group order">
+                                <label>Contact Types</label>
+                                <select name="contact_type_id[]" class="form-control" multiple>
+                                    @foreach ($contactTypes as $type)
+                                        <option value="{{ $type->id }}"
+                                            {{ collect(old('contact_type_id'))->contains($type->id) ? 'selected' : '' }}>
+                                            {{ $type->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="form-text text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple
+                                    types</small>
+                            </div> --}}
+
+                            <div class="form-group order">
+                                <label>Contact Types</label>
+                                <div class="d-flex flex-wrap">
+                                    @foreach ($contactTypes as $type)
+                                        <div class="form-check mr-3">
+                                            <input type="checkbox" name="contact_type_id[]" value="{{ $type->id }}"
+                                                class="form-check-input" id="type_{{ $type->id }}"
+                                                {{ is_array(old('contact_type_id')) && in_array($type->id, old('contact_type_id')) ? 'checked' : (isset($edit) && $edit->contactTypes->contains($type) ? 'checked' : '') }}>
+                                            <label class="form-check-label"
+                                                for="type_{{ $type->id }}">{{ $type->name }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
 
                             <div class="text-right">
                                 <button type="submit" class="btn btn-primary">Add</button>
@@ -157,21 +170,23 @@
             @if ($form_type == 'edit')
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Edit contact</h4>
+                        <h4 class="card-title">Edit Contact</h4>
                     </div>
                     @include('validate')
                     <div class="card-body">
                         <form action="{{ route('contact.update', $edit->id) }}" method="POST">
                             @csrf
                             @method('PUT')
+
+                            <!-- Other contact fields like name, email, etc. -->
                             <div class="form-group">
                                 <label>Name</label>
                                 <input name="name" value="{{ $edit->name }}" type="text" class="form-control"
                                     autofocus>
                             </div>
                             <div class="form-group">
-                                <label>Email <small class="text-danger"></label>
-                                <input name="email" value="{{ $edit->email }}" type="text" class="form-control"
+                                <label>Email</label>
+                                <input name="email" value="{{ $edit->email }}" type="email" class="form-control"
                                     autofocus>
                             </div>
                             <div class="form-group">
@@ -185,7 +200,7 @@
                                     class="form-control" autofocus>
                             </div>
                             <div class="form-group">
-                                <label>Organiation</label>
+                                <label>Organization</label>
                                 <input name="organization" value="{{ $edit->organization }}" type="text"
                                     class="form-control" autofocus>
                             </div>
@@ -195,6 +210,24 @@
                                     autofocus>
                             </div>
 
+                            <!-- Contact Types -->
+                            <div class="form-group">
+                                <label>Contact Types</label>
+                                <div class="d-flex flex-wrap">
+                                    @foreach ($contactTypes as $type)
+                                        <div class="form-check mr-3">
+                                            <input type="checkbox" name="contact_type_id[]" value="{{ $type->id }}"
+                                                class="form-check-input" id="type_{{ $type->id }}"
+                                                {{ $edit->contactTypes->contains($type) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="type_{{ $type->id }}">
+                                                {{ $type->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+
                             <div class="text-right">
                                 <a class="btn btn-info" href="{{ route('contact.index') }}">Back</a>
                                 <button type="submit" class="btn btn-primary">Update</button>
@@ -203,6 +236,8 @@
                     </div>
                 </div>
             @endif
+
+
         </div>
     </div>
 @endsection

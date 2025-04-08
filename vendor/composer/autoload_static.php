@@ -34,6 +34,7 @@ class ComposerStaticInit61d054dc67f1d365c72e2a9623feb244
         'ce9671a430e4846b44e1c68c7611f9f5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
         '320163ac6b93aebe3dc25b60a0533d56' => __DIR__ . '/..' . '/spatie/laravel-ignition/src/helpers.php',
+        '00620ec3787303b77ee72cb3469bb395' => __DIR__ . '/../..' . '/app/Helpers/PermissionHelper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -534,6 +535,7 @@ class ComposerStaticInit61d054dc67f1d365c72e2a9623feb244
         'App\\Http\\Controllers\\Admin\\AdminProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AdminProfileController.php',
         'App\\Http\\Controllers\\Admin\\AdminRoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AdminRoleController.php',
         'App\\Http\\Controllers\\Admin\\ContactController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ContactController.php',
+        'App\\Http\\Controllers\\Admin\\ContactTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ContactTypeController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\Frontend\\FrontendController' => __DIR__ . '/../..' . '/app/Http/Controllers/Frontend/FrontendController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -551,8 +553,13 @@ class ComposerStaticInit61d054dc67f1d365c72e2a9623feb244
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Requests\\StorecontactRequest' => __DIR__ . '/../..' . '/app/Http/Requests/StorecontactRequest.php',
         'App\\Http\\Requests\\UpdatecontactRequest' => __DIR__ . '/../..' . '/app/Http/Requests/UpdatecontactRequest.php',
+        'App\\Mail\\AccountInformationMail' => __DIR__ . '/../..' . '/app/Mail/AccountInformationMail.php',
+        'App\\Mail\\PasswordChangeSuccess' => __DIR__ . '/../..' . '/app/Mail/PasswordChangeSuccess.php',
+        'App\\Mail\\PasswordResetMail' => __DIR__ . '/../..' . '/app/Mail/PasswordResetMail.php',
+        'App\\Mail\\PasswordResetSuccessfulMail' => __DIR__ . '/../..' . '/app/Mail/PasswordResetSuccessfulMail.php',
         'App\\Models\\Admin' => __DIR__ . '/../..' . '/app/Models/Admin.php',
         'App\\Models\\Contact' => __DIR__ . '/../..' . '/app/Models/Contact.php',
+        'App\\Models\\ContactTypes' => __DIR__ . '/../..' . '/app/Models/ContactTypes.php',
         'App\\Models\\Permission' => __DIR__ . '/../..' . '/app/Models/Permission.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',

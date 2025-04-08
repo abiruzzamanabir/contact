@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPermissionController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\ContactTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,7 @@ Route::group(['middleware' => 'route.redirect'], function () {
     Route::resource('/role', AdminRoleController::class);
     Route::resource('/admin-user', AdminController::class);
     Route::resource('contact', ContactController::class);
+    Route::resource('contact-type', ContactTypeController::class);
 });
 
 

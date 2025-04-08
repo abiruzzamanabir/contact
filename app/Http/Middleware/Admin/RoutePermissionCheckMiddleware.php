@@ -12,7 +12,6 @@ class RoutePermissionCheckMiddleware
     {
         $admin = Auth::guard('admin')->user();
 
-        // Check if logged in
         if (!$admin) {
             return redirect()
                 ->route('admin.login.page')
@@ -20,13 +19,12 @@ class RoutePermissionCheckMiddleware
         }
 
         $permissions = json_decode($admin->role->permission ?? '[]', true);
+        $routeName = $request->route()->getName(); // e.g., "contact.index", "contact-type.index"
 
-        // Use URI segment (e.g., 'admin-user' from /admin-user/edit/5)
-        $uriSegment = $request->segment(1); // or segment(2) if your admin routes are prefixed like /admin/admin-user
-
-        // Check permission
-        if (in_array($uriSegment, $permissions)) {
-            return $next($request);
+        foreach ($permissions as $permission) {
+            if (str_starts_with($routeName, $permission)) {
+                return $next($request);
+            }
         }
 
         return redirect()
