@@ -29,7 +29,14 @@
                                     All Contacts
                                 </a>
                             </li>
-
+                            {{-- Contact Types --}}
+                            @foreach ($contactTypes as $contactType)
+                                <li>
+                                    <a href="{{ route('contact.index', ['type' => $contactType->name]) }}">
+                                        {{ $contactType->name }}
+                                    </a>
+                                </li>
+                            @endforeach
                             {{-- Extra sub-permissions --}}
                             @php
                                 $contactSubPermissions = [
@@ -48,15 +55,6 @@
                                         </a>
                                     </li>
                                 @endif
-                            @endforeach
-                            {{-- Contact Types --}}
-                            @foreach ($contactTypes as $contactType)
-                                <li>
-                                    <a href="{{ route('contact.index', ['type' => $contactType->id]) }}"
-                                        class="{{ request()->query('type') == $contactType->id ? 'active' : '' }}">
-                                        {{ $contactType->name }}
-                                    </a>
-                                </li>
                             @endforeach
                         </ul>
                     </li>

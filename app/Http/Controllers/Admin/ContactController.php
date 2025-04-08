@@ -14,16 +14,16 @@ class ContactController extends Controller
     // Display a listing of the contacts
     public function index(Request $request)
     {
-        // Get the contact type id from the URL query string
+        // Get the contact type name from the URL query string
         $type = $request->get('type');
 
         // Query for contacts
         $contacts = Contact::query();
 
-        // If a contact type is selected, filter the contacts by that type
+        // If a contact type name is selected, filter the contacts by that contact type name
         if ($type) {
             $contacts = $contacts->whereHas('contactTypes', function ($query) use ($type) {
-                $query->where('contact_type_id', $type);
+                $query->where('name', $type); // Filter by contact type name instead of ID
             });
         }
 
@@ -34,15 +34,17 @@ class ContactController extends Controller
                 ->orWhere('email', 'like', "%{$search}%")
                 ->orWhere('phone', 'like', "%{$search}%")
                 ->orWhere('designation', 'like', "%{$search}%")
-                ->orWhere('organization', 'like', "%{$search}%");
+                ->orWhere('organization', 'like', "%{$search}%")
+                ->orWhere('address', 'like', "%{$search}%");
         }
 
         // Paginate the results
         $contacts = $contacts->paginate(10);  // Adjust pagination as needed
 
         $admin = $contacts;
-        $contactTypes = ContactTypes::all();
+        $contactTypes = ContactTypes::all();  // Fetch all contact types
         $roles = Role::orderBy("id", "asc")->get();
+
         return view('admin.pages.contact.index', [
             'all_admin' => $admin,
             'form_type'  => 'create',
@@ -50,6 +52,7 @@ class ContactController extends Controller
             'contactTypes' => $contactTypes,
         ]);
     }
+
 
     // Store a newly created contact
     public function store(Request $request)
