@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\ContactsExport;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPermissionController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ContactTypeController;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +49,16 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/admin-user-status-update/{id}', [AdminController::class, 'updateStatus'])->name('admin.status.update');
     Route::get('/admin-user-trash-update/{id}', [AdminController::class, 'updateTrash'])->name('admin.trash.update');
     Route::get('/admin-trash', [AdminController::class, 'trashUsers'])->name('admin.trash');
+
+    Route::get('contacts-export', function () {
+        return Excel::download(new ContactsExport(), 'all_contacts.xlsx');
+    })->name('contacts.export.all');
+
+    Route::get('contacts-export/{contactTypeId}', function ($contactTypeId) {
+        $searchQuery = request()->get('search'); // Corrected here
+        return Excel::download(new ContactsExport($contactTypeId, $searchQuery), (new ContactsExport($contactTypeId))->fileName());
+    })->name('contacts.export.type');
+
 });
 Route::group(['middleware' => 'route.redirect'], function () {
     Route::resource('/permission', AdminPermissionController::class);

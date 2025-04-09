@@ -3,7 +3,7 @@
         <div id="sidebar-menu" class="sidebar-menu">
             @php
                 use App\Models\ContactTypes;
-                $contactTypes = ContactTypes::all();
+                $contactTypes = ContactTypes::whereHas('contacts')->withCount('contacts')->get();
             @endphp
             <ul>
                 <li class="menu-title"><span>Main</span></li>
@@ -29,14 +29,16 @@
                                     All Contacts
                                 </a>
                             </li>
-                            {{-- Contact Types --}}
                             @foreach ($contactTypes as $contactType)
                                 <li>
                                     <a href="{{ route('contact.index', ['type' => $contactType->name]) }}">
                                         {{ $contactType->name }}
+                                        <span class="badge bg-primary">{{ $contactType->contacts_count }}</span>
                                     </a>
                                 </li>
                             @endforeach
+
+
                             {{-- Extra sub-permissions --}}
                             @php
                                 $contactSubPermissions = [
@@ -60,8 +62,31 @@
                     </li>
                 @endif
 
+                @if (hasPermission('contacts-export'))
+                    <li class="menu-title"><span>Export Option</span></li>
+                    <li class="submenu">
+                        <a href="#"><i class="fa fa-user-shield"></i> <span>Export</span> <span
+                                class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            <li>
+                                <a href="{{ route('contacts.export.all') }}"
+                                    class="{{ request()->routeIs('admin-user.index') ? 'active' : '' }}">
+                                    Export All Contacts
+                                </a>
+                            </li>
+                            @foreach ($contactTypes as $contactType)
+                                <li>
+                                    <a href="{{ route('contacts.export.type', $contactType->id) }}">
+                                        Export {{ $contactType->name }} Contacts
+                                        <span class="badge bg-primary">{{ $contactType->contacts_count }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
 
 
+                        </ul>
+                    </li>
+                @endif
 
                 {{-- Admin Option --}}
                 @if (hasPermission('admin-user') || hasPermission('role') || hasPermission('permission'))
@@ -118,7 +143,9 @@
                         </a>
                     </li>
                 @endif
+
             </ul>
+
         </div>
     </div>
 </div>
