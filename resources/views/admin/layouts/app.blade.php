@@ -11,7 +11,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/assets/img/favicon.png') }}">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/assets/css/bootstrap.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Fontawesome CSS -->
     <link rel="stylesheet" href="{{ asset('admin/assets/css/font-awesome.min.css') }}">
@@ -27,9 +27,9 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
 
     <!--[if lt IE 9]>
-			<script src="admin/assets/js/html5shiv.min.js"></script>
-			<script src="admin/assets/js/respond.min.js"></script>
-		<![endif]-->
+   <script src="admin/assets/js/html5shiv.min.js"></script>
+   <script src="admin/assets/js/respond.min.js"></script>
+  <![endif]-->
 </head>
 
 <body>
@@ -50,8 +50,8 @@
                 <div class="page-header">
                     <div class="row">
                         <div class="col-sm-12">
-                            <h3 class="page-title">Welcome {{Auth::guard('admin')->user()->fast_name}}
-                                {{Auth::guard('admin')->user()->last_name}}!</h3>
+                            <h3 class="page-title">Welcome {{ Auth::guard('admin')->user()->fast_name }}
+                                {{ Auth::guard('admin')->user()->last_name }}!</h3>
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item active">Dashboard</li>
                             </ul>
@@ -76,9 +76,7 @@
     <script src="{{ asset('admin/assets/js/jquery-3.2.1.min.js') }}"></script>
 
     <!-- Bootstrap Core JS -->
-    <script src="{{ asset('admin/assets/js/popper.min.js') }}"></script>
-    <script src="{{ asset('admin/assets/js/bootstrap.min.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Slimscroll JS -->
     <script src="{{ asset('admin/assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
 

@@ -46,13 +46,26 @@ class DatabaseSeeder extends Seeder
             'name' => 'Permission',
             'slug' => 'permission',
         ]);
+        Permission::create([
+            'name' => 'Contact',
+            'slug' => 'contact',
+        ]);
+        Permission::create([
+            'name' => 'Contact Type',
+            'slug' => 'contact-type',
+        ]);
+        Permission::create([
+            'name' => 'Contact Export',
+            'slug' => 'contact-export',
+        ]);
+
 
 
 
         Role::create([
             'name' => 'Super Admin',
             'slug' => 'super-admin',
-            'permission' => '["admin-user","role","permission"]',
+            'permission' => '["admin-user","role","permission","contact","contact-type","contact-export"]',
         ]);
         Role::create([
             'name' => 'Admin',

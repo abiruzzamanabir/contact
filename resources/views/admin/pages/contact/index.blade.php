@@ -29,7 +29,6 @@
                                     @endif
                                     <th>Created By</th>
                                     <th>Updated By</th>
-                                    {{-- <th>Status</th> --}}
                                     <th>Type</th>
                                     <th>Action</th>
                                 </tr>
@@ -38,7 +37,7 @@
                                 @forelse ($all_admin as $user)
                                     @if ($user->name !== 'Provider')
                                         <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->phone }}</td>
@@ -53,39 +52,55 @@
                                             @endif
                                             <td>{{ $user->created_by }}</td>
                                             <td>{{ $user->updated_by }}</td>
-
-
-                                            {{-- Show contact types --}}
                                             <td>
                                                 @foreach ($user->contactTypes as $contactType)
                                                     <span class="badge badge-info">{{ $contactType->name }}</span>
                                                 @endforeach
                                             </td>
-
                                             <td>
+                                                <!-- View Button to Open Modal -->
+                                                <button class="btn btn-sm btn-primary" data-toggle="modal"
+                                                    data-target="#contactModal{{ $user->id }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+
                                                 <a class="btn btn-sm btn-warning"
                                                     href="{{ route('contact.edit', $user->id) }}">
-                                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                                    <i class="fa fa-edit"></i>
                                                 </a>
+
                                                 @if ($form_type == 'create')
                                                     <a class="btn btn-sm btn-danger"
                                                         href="{{ route('contact.trash.update', $user->id) }}">
-                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        <i class="fa fa-trash"></i>
                                                     </a>
                                                 @endif
+
+                                                <a class="btn btn-sm btn-success"
+                                                    href="{{ route('contact.logs', $user->id) }}" target="_blank"
+                                                    @if (Auth::guard('admin')->user()->role->name !== 'Super Admin') style="display:none;" @endif>
+                                                    <i class="fa fa-file-text"></i>
+                                                </a>
+
+                                                <a class="btn btn-sm btn-primary"
+                                                    href="{{ route('contact.print', $user->id) }}" target="_blank">
+                                                    <i class="fa fa-print"></i>
+                                                </a>
                                             </td>
-                                            </td>
+
                                         </tr>
+
+                                        @include('admin.pages.contact.modal')
                                     @endif
                                 @empty
                                     <tr>
-                                        <td class="text-danger text-center" colspan="9">No Data Found</td>
+                                        <td colspan="13" class="text-center text-danger">No Data Found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
-
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -240,4 +255,6 @@
 
         </div>
     </div>
+
+
 @endsection

@@ -58,7 +58,9 @@ Route::group(['middleware' => 'admin'], function () {
         $searchQuery = request()->get('search'); // Corrected here
         return Excel::download(new ContactsExport($contactTypeId, $searchQuery), (new ContactsExport($contactTypeId))->fileName());
     })->name('contacts.export.type');
-
+    Route::get('/contact/{id}/logs', [ContactController::class, 'logs'])->name('contact.logs');
+    // Route for printing contact details
+    Route::get('/contact/{id}/print', [ContactController::class, 'printContact'])->name('contact.print');
 });
 Route::group(['middleware' => 'route.redirect'], function () {
     Route::resource('/permission', AdminPermissionController::class);
