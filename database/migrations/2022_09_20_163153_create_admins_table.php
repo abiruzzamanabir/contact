@@ -35,6 +35,7 @@ return new class extends Migration
             $table->string('nidphoto')->nullable();
             $table->string('stuphoto')->nullable();
             $table->string('access_token')->nullable();
+            $table->string('last_login_ip')->nullable();
             $table->boolean('status')->default(true);
             $table->boolean('trash')->default(false);
             $table->timestamps();
