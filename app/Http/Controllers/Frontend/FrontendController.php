@@ -11,8 +11,10 @@ class FrontendController extends Controller
     public function showHomePage()
     {
         // $clients = Client::get();
-        return view('frontend.pages.app', [
-            // 'all_client' => $clients,
-        ]);
+        // return view('frontend.pages.app', [
+        //      'all_client' => $clients,
+        // ]);
+
+        return redirect()->route('admin.dashboard.page');
     }
 }
