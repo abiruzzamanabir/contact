@@ -48,7 +48,7 @@ class ContactTypeController extends Controller
         ContactTypes::create([
             'name' => Str::ucfirst($request->name),
         ]);
-        return back()->with('success', 'permission added successfully');
+        return back()->with('success', 'Contact type added successfully');
     }
 
     /**
@@ -92,7 +92,7 @@ class ContactTypeController extends Controller
         $update_data->update([
             'name' => Str::ucfirst($request->name),
         ]);
-        return back()->with('success', 'permission updated successfully');
+        return back()->with('success', 'Contact type updated successfully');
     }
 
     /**
@@ -105,6 +105,6 @@ class ContactTypeController extends Controller
     {
         $delete = ContactTypes::findOrFail($id);
         $delete->delete();
-        return back()->with('success-main', 'permission removed successfully');
+        return back()->with('success-main', 'Contact type removed successfully');
     }
 }
