@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Dhaka', // or your desired timezone
 
     /*
     |--------------------------------------------------------------------------
