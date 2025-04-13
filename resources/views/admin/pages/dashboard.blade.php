@@ -108,7 +108,7 @@
                                 class="text-decoration-none text-reset">
                                 <div class="card hover-shadow transition border-0 text-center">
                                     <div class="card-body py-4">
-                                        <i class="fa fa-folder fa-2x text-dark mb-3"></i>
+                                        <i class="fa fa-address-book fa-2x text-dark mb-3"></i>
                                         <h5 class="mb-2 text-dark">{{ $contactType->name }}</h5>
                                         <h2 class="text-primary">{{ $contactType->contacts_count }}</h2>
                                     </div>
