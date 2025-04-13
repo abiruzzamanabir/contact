@@ -35,7 +35,7 @@
         use App\Models\ContactTypes;
         use App\Models\Admin;
 
-        $contactTypes = ContactTypes::withCount('contacts')->get();
+        $contactTypes = ContactTypes::withCount('contacts')->orderBy('name')->get();
         $adminCount = Admin::count();
         $activeAdmins = Admin::where('status', true)->count();
         $blockedAdmins = Admin::where('status', false)->count();

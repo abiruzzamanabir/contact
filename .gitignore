@@ -1,0 +1,6 @@
+# Ignore the .env file
+.env
+.env.*
+
+# Ignore app.php configuration file
+/config/app.php
