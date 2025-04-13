@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\NewDeviceLoginAlert;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AdminAuthController extends Controller
 {
@@ -20,27 +22,38 @@ class AdminAuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::guard('admin')->attempt([
-            'email' => $request->email_cell_username,
-            'password' => $request->password,
-        ]) || Auth::guard('admin')->attempt([
-            'cell' => $request->email_cell_username,
-            'password' => $request->password,
-        ]) || Auth::guard('admin')->attempt([
-            'username' => $request->email_cell_username,
-            'password' => $request->password,
-        ])) {
-            if (Auth::guard('admin')->user()->status != true) {
-                Auth::guard('admin')->logout();
-                return redirect()->route('admin.login.page')->with('warning','Your account is blocked. Please contact with Admin');
-            } else {
+        $credentials = ['password' => $request->password];
+        $input = $request->email_cell_username;
+
+        $fields = ['email', 'cell', 'username'];
+        foreach ($fields as $field) {
+            $credentials[$field] = $input;
+            if (Auth::guard('admin')->attempt($credentials)) {
+                $user = Auth::guard('admin')->user();
+
+                // Check if the account is active
+                if (!$user->status) {
+                    Auth::guard('admin')->logout();
+                    return redirect()->route('admin.login.page')
+                        ->with('warning', 'Your account is blocked. Please contact with Admin');
+                }
+
+                // IP Check & Send Alert
+                $currentIp = $request->ip();
+                if ($user->last_login_ip !== $currentIp) {
+                    Mail::to($user->email)->send(new NewDeviceLoginAlert($user, $currentIp, now()->toDateTimeString()));
+                }
+
+                // Update last IP
+                $user->update(['last_login_ip' => $currentIp]);
+
                 return redirect()->route('admin.dashboard.page');
             }
-            
-            
-        } else {
-            return redirect()->route('admin.login.page')->with('warning', 'Email or Password incorrect');
+            unset($credentials[$field]);
         }
+
+        return redirect()->route('admin.login.page')
+            ->with('warning', 'Email or Password incorrect');
     }
     public function Logout()
     {

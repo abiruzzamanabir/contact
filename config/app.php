@@ -56,7 +56,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'asset_url' => env('ASSET_URL','http://localhost/contact/public'),
+    // 'asset_url' => env('ASSET_URL','http://localhost/contact/public'),
+    'asset_url' => env('ASSET_URL', 'https://innovationconclavebd.com/contact/public'),
 
     /*
     |--------------------------------------------------------------------------

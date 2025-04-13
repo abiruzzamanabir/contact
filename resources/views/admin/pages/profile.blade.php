@@ -8,7 +8,7 @@
                 <div class="col-auto profile-image">
                     @if (Auth::guard('admin')->user()->photo == 'avatar.png')
                     <a href="#">
-                        <img class="rounded-circle" alt="User Image" src="{{ url('storage/admins/avatar.png') }}">
+                        <img class="rounded-circle" alt="User Image" src="{{ url('public/storage/admins/avatar.png') }}">
                     </a>
                     @else
                     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">

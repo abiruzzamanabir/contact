@@ -1,3 +1,7 @@
+@php
+    $path = Request::path(); // Get the full path
+    $segments = explode('/', $path); // Split the path by '/'
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,7 +57,11 @@
                             <h3 class="page-title">Welcome {{ Auth::guard('admin')->user()->fast_name }}
                                 {{ Auth::guard('admin')->user()->last_name }}!</h3>
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item active">Dashboard</li>
+                                @foreach ($segments as $segment)
+                                    <li class="breadcrumb-item active text-uppercase">
+                                        {{ ucfirst(str_replace('-', ' ', $segment)) }}
+                                    </li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>

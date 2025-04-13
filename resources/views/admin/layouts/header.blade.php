@@ -111,8 +111,9 @@
            <li class="nav-item dropdown has-arrow">
                @if (Auth::guard('admin')->user()->photo == 'avatar.png')
                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                       <span class="user-img"><img class="rounded-circle" src="{{ url('storage/admins/avatar.png') }}"
-                               width="31" alt="{{ Auth::guard('admin')->user()->fast_name }}"></span>
+                       <span class="user-img"><img class="rounded-circle"
+                               src="{{ url('public/storage/admins/avatar.png') }}" width="31"
+                               alt="{{ Auth::guard('admin')->user()->fast_name }}"></span>
                    </a>
                @else
                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
@@ -126,7 +127,7 @@
                    <div class="user-header">
                        @if (Auth::guard('admin')->user()->photo == 'avatar.png')
                            <div class="avatar avatar-sm">
-                               <img src="{{ url('storage/admins/avatar.png') }}" alt="User Image"
+                               <img src="{{ url('public/storage/admins/avatar.png') }}" alt="User Image"
                                    class="avatar-img rounded-circle">
                            </div>
                        @else

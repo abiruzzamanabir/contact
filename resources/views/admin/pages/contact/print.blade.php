@@ -18,9 +18,21 @@
         $contactDetailsString .= "{$key}: {$value}\n";
     }
 
+    // vCard
+    $vcard = "BEGIN:VCARD\nVERSION:3.0\n";
+    $vcard .= "FN:{$contact->name}\n";
+    $vcard .= "ORG:{$contact->organization}\n";
+    $vcard .= "TITLE:{$contact->designation}\n";
+    $vcard .= "TEL:{$contact->phone}\n";
+    $vcard .= "EMAIL:{$contact->email}\n";
+    $vcard .= "ADR:{$contact->address}\n";
+    $vcard .= 'END:VCARD';
+    $vcardBase64 = base64_encode($vcard);
+
     // URL encode the string for QR code
     $encodedContactDetails = urlencode($contactDetailsString);
 @endphp
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +45,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
-    <!-- Font Awesome for icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         integrity="sha512-Fv+F4m7Cey+vXc37gUg+dr7iBvXGzO+mK4cihZB7IhtJoWWZyZBi3r0YAEqv8a0XKcz27mT8uhw2dzx1IUz9xg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -42,6 +54,8 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f7f9fc;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
@@ -51,12 +65,14 @@
             padding: 30px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        h1 {
-            text-align: center;
+        h1,
+        th,
+        td,
+        p {
             color: #333;
-            font-weight: 600;
         }
 
         .table {
@@ -72,23 +88,6 @@
 
         td {
             vertical-align: middle;
-        }
-
-        .btn-share {
-            margin-left: 10px;
-        }
-
-        .alert-summary {
-            background-color: #f0f4f7;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-
-        .alert-info {
-            background-color: #d1ecf1;
-            padding: 10px;
-            border-radius: 5px;
         }
 
         .btn {
@@ -110,8 +109,14 @@
             border: none;
         }
 
-        .btn-group .dropdown-menu {
-            min-width: 200px;
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+
+        .btn-dark {
+            background-color: #343a40;
+            border: none;
         }
 
         .dropdown-item {
@@ -119,25 +124,8 @@
             font-size: 1rem;
         }
 
-        .alert-summary {
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        .share-buttons i {
-            margin-right: 10px;
-        }
-
-        .qr-code-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
         .qr-code-container img {
             max-width: 150px;
-            margin-right: 20px;
         }
 
         @media print {
@@ -162,6 +150,57 @@
                 margin: 10mm;
             }
         }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        body.dark-mode .container {
+            background-color: #495057;
+            color: #fff;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode th,
+        body.dark-mode td,
+        body.dark-mode p,
+        body.dark-mode .dropdown-item {
+            color: #fff;
+        }
+
+        body.dark-mode .table th {
+            background-color: #6c757d;
+        }
+
+        body.dark-mode .table td {
+            background-color: #495057;
+        }
+
+        body.dark-mode .btn {
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+
+        body.dark-mode .btn-info {
+            background-color: #17a2b8;
+            border: none;
+        }
+
+        body.dark-mode .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        body.dark-mode .btn-dark {
+            background-color: #343a40;
+            border: none;
+        }
+
+        body.dark-mode .qr-code-container .text-muted {
+            color: #fff !important;
+        }
     </style>
 </head>
 
@@ -170,30 +209,12 @@
         <h1>Contact Details - {{ $contact->name }}</h1>
 
         <table class="table table-bordered">
-            <tr>
-                <th>Name</th>
-                <td>{{ $contact->name }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ $contact->email }}</td>
-            </tr>
-            <tr>
-                <th>Phone</th>
-                <td>{{ $contact->phone }}</td>
-            </tr>
-            <tr>
-                <th>Designation</th>
-                <td>{{ $contact->designation }}</td>
-            </tr>
-            <tr>
-                <th>Organization</th>
-                <td>{{ $contact->organization }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ $contact->address }}</td>
-            </tr>
+            @foreach ($contactDetails as $label => $value)
+                <tr>
+                    <th>{{ $label }}</th>
+                    <td>{{ $value }}</td>
+                </tr>
+            @endforeach
         </table>
 
         @if ($summary)
@@ -203,50 +224,61 @@
             </div>
         @endif
 
-        <div class="qr-code-container mt-4">
-            <div class="w-100">
-                <iframe src="https://maps.google.com/maps?q={{ urlencode($contact->address) }}&output=embed"
-                    width="100%" height="500" frameborder="0"></iframe>
-            </div>
-            <div class="w-100 d-flex justify-content-center mt-4">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode(request()->fullUrl()) }}"
-                    alt="QR Code" />
-            </div>
-            <div class="w-100 d-flex justify-content-center mt-4">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ $encodedContactDetails }}"
-                    alt="QR Code" />
+        <div class="qr-code-container mt-4 text-center">
+            <iframe src="https://maps.google.com/maps?q={{ urlencode($contact->address) }}&output=embed" width="100%"
+                height="400" frameborder="0"></iframe>
+
+            <div class="d-flex flex-wrap justify-content-center mt-4">
+                <div class="mx-2">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ urlencode(request()->fullUrl()) }}"
+                        alt="Page QR Code" />
+                    <p class="text-muted small mt-2">This Page</p>
+                </div>
+                <div class="mx-2">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ $encodedContactDetails }}"
+                        alt="Contact QR Code" />
+                    <p class="text-muted small mt-2">Contact Info</p>
+                </div>
             </div>
         </div>
-        <div class="d-flex justify-content-end">
-            <button class="btn btn-info" onclick="window.print()">
+
+        <div class="d-flex justify-content-end flex-wrap mt-4">
+            <button class="btn btn-info mb-2 mr-2" onclick="window.print()">
                 <i class="fas fa-print"></i> Print
             </button>
 
-            <div class="btn-group ml-3">
+            <a href="data:text/vcard;base64,{{ $vcardBase64 }}" download="{{ $contact->name }}.vcf"
+                class="btn btn-success mb-2 mr-2">
+                <i class="fas fa-download"></i> Download vCard
+            </a>
+
+            <button class="btn btn-secondary mb-2 mr-2" onclick="copyMapUrl()">
+                <i class="fas fa-map-marker-alt"></i> Copy Map URL
+            </button>
+
+            <button class="btn btn-dark mb-2 mr-2" onclick="toggleDarkMode()">
+                <i class="fas fa-moon"></i> Toggle Dark Mode
+            </button>
+
+            <div class="btn-group mb-2">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                     <i class="fas fa-share-alt"></i> Share
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="#" onclick="shareWhatsApp()"><i
                             class="fab fa-whatsapp text-success"></i> WhatsApp</a>
-                    <a class="dropdown-item" href="#" onclick="shareTelegram()"><i
-                            class="fab fa-telegram text-primary"></i> Telegram</a>
-                    <a class="dropdown-item" href="#" onclick="shareFacebook()"><i
-                            class="fab fa-facebook text-primary"></i> Facebook</a>
-                    <a class="dropdown-item" href="#" onclick="shareTwitter()"><i
-                            class="fab fa-twitter text-info"></i> Twitter</a>
-                    <a class="dropdown-item" href="#" onclick="shareLinkedIn()"><i
-                            class="fab fa-linkedin text-info"></i> LinkedIn</a>
                     <a class="dropdown-item" href="#" onclick="shareEmail()"><i
                             class="fas fa-envelope text-warning"></i> Email</a>
+                    <a class="dropdown-item" href="#" onclick="shareSMS()"><i class="fas fa-sms text-primary"></i>
+                        SMS</a>
                     <a class="dropdown-item" href="#" onclick="copyToClipboard()"><i class="fas fa-copy"></i> Copy
                         to Clipboard</a>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- jQuery and Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
     </script>
@@ -254,52 +286,23 @@
         integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous">
     </script>
 
-    <!-- Share Script -->
     <script>
         const contactDetails =
             `Name: {{ $contact->name }}\nEmail: {{ $contact->email }}\nPhone: {{ $contact->phone }}\nDesignation: {{ $contact->designation }}\nOrganization: {{ $contact->organization }}\nAddress: {{ $contact->address }}`;
 
         const mapUrl = `https://www.google.com/maps?q={{ urlencode($contact->address) }}`;
 
-        const whatsappMessage = `Contact Details:
-${contactDetails}
-
-Map Location: ${mapUrl}`;
-
-
+        const whatsappMessage = `Contact Details:\n${contactDetails}\n\nMap Location: ${mapUrl}`;
 
         function shareWhatsApp() {
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
-
             window.open(whatsappUrl, '_blank');
         }
 
-        function shareTelegram() {
-            const url =
-                `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(contactDetails)}`;
-            window.open(url, '_blank');
-        }
-
-        function shareFacebook() {
-            const url =
-                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(contactDetails)}`;
-            window.open(url, '_blank');
-        }
-
-        function shareTwitter() {
-            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(contactDetails)}`;
-            window.open(url, '_blank');
-        }
-
-        function shareLinkedIn() {
-            const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
-            window.open(url, '_blank');
-        }
-
         function shareEmail() {
-            const subject = "Contact Details";
-            const body = contactDetails;
-            window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+            const subject = "Here's a Contact You Might Need";
+            const body = `Hi,\n\nHere's a contact that might be useful:\n\n${contactDetails}\n\nMap: ${mapUrl}`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
 
         function copyToClipboard() {
@@ -309,8 +312,26 @@ Map Location: ${mapUrl}`;
                 alert("Error copying to clipboard: " + err);
             });
         }
-    </script>
 
+        function copyMapUrl() {
+            navigator.clipboard.writeText(mapUrl).then(() => {
+                alert("Map URL copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy Map URL: " + err);
+            });
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function shareSMS() {
+            const smsBody =
+                `Contact Info:\n{{ $contact->name }}\n{{ $contact->designation }} at {{ $contact->organization }}\nPhone: {{ $contact->phone }}\nEmail: {{ $contact->email }}\nAddress: {{ $contact->address }}`;
+            const smsUrl = `sms:?&body=${encodeURIComponent(smsBody)}`;
+            window.location.href = smsUrl;
+        }
+    </script>
 </body>
 
 </html>
