@@ -19,7 +19,7 @@
                 @if (hasPermission('contact'))
                     <li
                         class="submenu {{ request()->routeIs('contact.*') || request()->routeIs('contact-type.*') || request()->routeIs('contact-group.*') ? 'active' : '' }}">
-                        <a href="#"><i class="fa fa-user"></i> <span>Contact</span> <span
+                        <a href="#"><i class="fa fa-users"></i> <span>Contact</span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;">
                             {{-- All Contacts --}}
@@ -93,7 +93,7 @@
                     <li class="menu-title"><span>Admin Option</span></li>
                     <li
                         class="submenu {{ request()->is('admin-user*') || request()->is('role*') || request()->is('permission*') ? 'active' : '' }}">
-                        <a href="#"><i class="fa fa-user-shield"></i> <span>Admin User</span> <span
+                        <a href="#"><i class="fa fa-user"></i> <span>Admin User</span> <span
                                 class="menu-arrow"></span></a>
                         <ul style="display: none;">
                             @if (hasPermission('admin-user'))
