@@ -198,7 +198,9 @@
                         <p>We noticed your account <strong>{{ $user->email }}</strong> was accessed from a new IP
                             address.</p>
 
-                        <p><strong>When:</strong> {{ \Carbon\Carbon::parse($time)->format('h:i A') }} (UTC+6)</p>
+                        <p><strong>When:</strong> {{ \Carbon\Carbon::parse($time)->format('F j, Y \a\t h:i A') }}
+                            (UTC+6)</p>
+
 
                         <p><strong>IP Address:</strong> {{ $ip }}</p>
 
