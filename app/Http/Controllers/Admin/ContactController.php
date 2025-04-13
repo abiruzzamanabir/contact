@@ -89,7 +89,7 @@ class ContactController extends Controller
             'designation' => $request->designation,
             'organization' => $request->organization,
             'address' => $request->address,
-            'created_by' => Auth::guard('admin')->user()->fast_name,
+            'created_by' => Auth::guard('admin')->user()->fast_name . ' ' . Auth::guard('admin')->user()->last_name,
         ]);
 
         $contact->contactTypes()->attach($request->contact_type_id);
@@ -137,7 +137,7 @@ class ContactController extends Controller
             'designation' => $request->designation,
             'organization' => $request->organization,
             'address' => $request->address,
-            'updated_by' => Auth::guard('admin')->user()->fast_name,
+            'updated_by' => Auth::guard('admin')->user()->fast_name . ' ' . Auth::guard('admin')->user()->last_name,
         ]);
 
         $contact->contactTypes()->sync($request->contact_type_id);
