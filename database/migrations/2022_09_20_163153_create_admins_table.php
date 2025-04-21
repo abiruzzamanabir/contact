@@ -36,6 +36,7 @@ return new class extends Migration
             $table->string('stuphoto')->nullable();
             $table->string('access_token')->nullable();
             $table->string('last_login_ip')->nullable();
+            $table->timestamp('last_seen')->nullable();
             $table->boolean('status')->default(true);
             $table->boolean('trash')->default(false);
             $table->timestamps();

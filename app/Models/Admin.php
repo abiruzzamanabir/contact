@@ -10,11 +10,14 @@ use Illuminate\Notifications\Notifiable;
 
 class Admin extends User
 {
-    use HasFactory,Notifiable;
+    use HasFactory, Notifiable;
     protected $guarded = [];
+    protected $casts = [
+        'last_seen' => 'datetime',
+    ];
 
     public function role()
     {
-        return $this ->belongsTo(Role::class,'role_id','id');
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 }

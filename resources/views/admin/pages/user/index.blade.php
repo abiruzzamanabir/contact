@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 @section('main')
+    <div id="onlineNotification" class="alert alert-info d-none">
+        <strong>Heads up!</strong> An admin just came online.
+    </div>
+
     <div class="row">
         <div class="col-lg-8">
             <div class="card">
@@ -25,6 +29,7 @@
                                         <th>Updated At</th>
                                     @endif
                                     <th>Status</th>
+                                    <th>Last Online</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -78,6 +83,11 @@
                                                     @endif
                                                 @endif
                                             </td>
+                                            <td id="lastSeen-{{ $user->id }}">
+                                                {{ $user->last_seen ? $user->last_seen->diffForHumans() : 'Never' }}
+                                            </td>
+
+
                                             <td>
                                                 {{-- <a class="btn btn-sm btn-info" href=""><i class="fa fa-eye"
                                             aria-hidden="true"></i></a> --}}

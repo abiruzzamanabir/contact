@@ -189,4 +189,21 @@ class AdminController extends Controller
             'form_type'  => 'trash',
         ]);
     }
+    public function getLastSeen()
+    {
+        $admins = Admin::with('role')
+            ->where('role_id', '!=', 1) // Avoid Super Admins
+            ->where('fast_name', '!=', 'Provider') // Skip system user
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->fast_name,
+                    'last_seen' => $user->last_seen,
+                    'is_online' => now()->diffInSeconds($user->last_seen) <= 60,
+                ];
+            });
+
+        return response()->json($admins);
+    }
 }

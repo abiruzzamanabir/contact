@@ -273,6 +273,51 @@ toastr.options = {
                 },
             });
         });
+        let previousOnlineUsers = [];
+
+        function updateLastSeen() {
+            $.ajax({
+                url: "/contact/admin-user/last/seen",
+                method: "GET",
+                dataType: "json",
+                success: function (response) {
+                    const onlineNow = response
+                        .filter((user) => user.is_online)
+                        .map((user) => user.id);
+
+                    const newOnline = response.filter(
+                        (user) =>
+                            user.is_online &&
+                            !previousOnlineUsers.includes(user.id)
+                    );
+
+                    // ✅ Show toastr for each newly online user
+                    newOnline.forEach((user) => {
+                        toastr.info(`${user.name} is now online`);
+                    });
+
+                    previousOnlineUsers = onlineNow;
+
+                    // Optional: update UI elements too
+                    response.forEach((user) => {
+                        const el = document.querySelector(
+                            `#lastSeen-${user.id}`
+                        );
+                        if (el) {
+                            el.innerText = user.last_seen
+                                ? moment(user.last_seen).fromNow()
+                                : "Never";
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    console.error("AJAX error:", xhr.responseText);
+                },
+            });
+        }
+
+        // 🔁 Check every 10 seconds
+        setInterval(updateLastSeen, 10000);
 
         $(".delete-form").submit(function (e) {
             let conf = confirm("Are you sure?");
