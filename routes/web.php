@@ -68,6 +68,7 @@ Route::group(['middleware' => 'route.redirect'], function () {
     Route::resource('/admin-user', AdminController::class);
     Route::resource('contact', ContactController::class);
     Route::resource('contact-type', ContactTypeController::class);
+    Route::post('/contact-type/ajax', [ContactTypeController::class, 'storeAjax'])->name('contact-type-ajax');
 });
 
 

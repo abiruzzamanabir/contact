@@ -41,14 +41,31 @@ class ContactTypeController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|unique:contact_types'
+        $request->validate([
+            'name' => 'required|string|max:255'
         ]);
 
-        ContactTypes::create([
-            'name' => Str::ucfirst($request->name),
+        // Check for duplicate
+        $existingType = ContactTypes::where('name', $request->name)->first();
+        if ($existingType) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This contact type already exists.'
+            ], 409); // 409 Conflict
+        }
+
+        // Create new contact type
+        $type = ContactTypes::create([
+            'name' => $request->name
         ]);
-        return back()->with('success', 'Contact type added successfully');
+
+        return response()->json([
+            'success' => true,
+            'id' => $type->id,
+            'name' => $type->name,
+            'created_at_human' => $type->created_at->diffForHumans(), // 👈 important
+            'message' => 'Contact type added successfully.'
+        ]);
     }
 
     /**
@@ -88,12 +105,18 @@ class ContactTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $update_data = ContactTypes::findOrFail($id);
-        $update_data->update([
-            'name' => Str::ucfirst($request->name),
+        $request->validate([
+            'name' => 'required|string|max:255',
         ]);
-        return back()->with('success', 'Contact type updated successfully');
+
+        $type = ContactTypes::findOrFail($id);
+        $type->update([
+            'name' => $request->name,
+        ]);
+
+        return response()->json(['success' => true]);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -103,8 +126,37 @@ class ContactTypeController extends Controller
      */
     public function destroy($id)
     {
-        $delete = ContactTypes::findOrFail($id);
-        $delete->delete();
-        return back()->with('success-main', 'Contact type removed successfully');
+        $type = ContactTypes::findOrFail($id);
+        $type->delete();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function storeAjax(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+
+        // Check for duplicate
+        $existingType = ContactTypes::where('name', $request->name)->first();
+        if ($existingType) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This contact type already exists.'
+            ], 409); // 409 Conflict
+        }
+
+        // Create new contact type
+        $type = ContactTypes::create([
+            'name' => $request->name
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'id' => $type->id,
+            'name' => $type->name,
+            'message' => 'Contact type added successfully.'
+        ]);
     }
 }

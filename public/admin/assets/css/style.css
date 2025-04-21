@@ -4373,3 +4373,32 @@ table.table-inbox tbody tr.checked {
         display: none;
     }
 }
+
+#toast-container > .toast {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+    border: 1px solid #ccc;
+}
+
+#toast-container > .toast-error {
+    border-left: 5px solid #e74c3c;
+}
+#toast-container > .toast-success {
+    border-left: 5px solid #2ecc71;
+}
+.toast-close-button {
+    color: #333 !important; /* Dark color for visibility on light background */
+}
+
+.toast-close-button:hover {
+    color: #000 !important;
+}
+.swal-light-text {
+    background-color: #fff !important;
+    color: #333 !important;
+}
+
+.swal-light-text .swal2-title,
+.swal-light-text .swal2-html-container {
+    color: #333 !important;
+}

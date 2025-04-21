@@ -23,7 +23,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="contactTypeTableBody">
                                 @forelse ($all_contacttypes as $per)
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
@@ -35,18 +35,20 @@
                                             <td>{{ $per->updated_at->diffForHumans() }}</td>
                                         @endif
                                         <td>
-                                            {{-- <a class="btn btn-sm btn-info" href=""><i class="fa fa-eye"
-                                            aria-hidden="true"></i></a> --}}
-                                            <a class="btn btn-sm btn-warning"
-                                                href="{{ route('contact-type.edit', $per->id) }}"><i class="fa fa-edit"
-                                                    aria-hidden="true"></i></a>
+                                            {{-- <a class="btn btn-sm btn-warning"
+                                                href="{{ route('contact-type.edit', $per->id) }}"><i
+                                                    class="fa fa-edit"></i></a> --}}
+                                            <button type="button" class="btn btn-sm btn-warning edit-contact-type-btn"
+                                                data-id="{{ $per->id }}" data-name="{{ $per->name }}">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+
                                             @if ($form_type == 'create')
-                                                <form class="d-inline delete-form"
-                                                    action="{{ route('contact-type.destroy', $per->id) }}" method="POST">
+                                                <form class="d-inline ajax-delete-form" data-id="{{ $per->id }}">
                                                     @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-sm btn-danger"><i class="fa fa-trash"
-                                                            aria-hidden="true"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
                                                 </form>
                                             @endif
                                         </td>
@@ -56,26 +58,26 @@
                                         <td class="text-danger text-center" colspan="5">No Data Found</td>
                                     </tr>
                                 @endforelse
-
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- Right Side Form --}}
         <div class="col-md-4">
             @if ($form_type == 'create')
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Add new contact type</h4>
                     </div>
-                    @include('validate')
                     <div class="card-body">
-                        <form action="{{ route('contact-type.store') }}" method="POST">
+                        <form id="addContactTypeForm" action="{{ route('contact-type.store') }}" method="POST">
                             @csrf
-                            <div class="form-group order">
-                                <label>Name</label>
-                                <input name="name" type="text" class="form-control" autofocus>
+                            <div class="form-group">
+                                <label class="text-dark">Name</label>
+                                <input name="name" type="text" class="form-control" id="contactTypeName" autofocus>
                             </div>
 
                             <div class="text-right">
@@ -85,18 +87,18 @@
                     </div>
                 </div>
             @endif
+
             @if ($form_type == 'edit')
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Edit contact</h4>
                     </div>
-                    @include('validate')
                     <div class="card-body">
                         <form action="{{ route('contact-type.update', $edit->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="form-group">
-                                <label>Name</label>
+                                <label class="text-dark">Name</label>
                                 <input name="name" value="{{ $edit->name }}" type="text" class="form-control"
                                     autofocus>
                             </div>
@@ -109,6 +111,34 @@
                     </div>
                 </div>
             @endif
+        </div>
+    </div>
+    <!-- Edit Contact Type Modal -->
+    <div class="modal fade" id="editContactTypeModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="editContactTypeForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Edit Contact Type</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal">
+                            &times;
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editContactTypeId">
+                        <div class="form-group">
+                            <label class="text-dark">Name</label>
+                            <input type="text" id="editContactTypeName" name="name" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

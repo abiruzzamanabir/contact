@@ -57,8 +57,8 @@ class ContactController extends Controller
             });
         }
 
-        $contacts = $contacts->paginate(10);
-        $contactTypes = ContactTypes::all();
+        $contacts = $contacts->where('trash', false)->paginate(10);
+        $contactTypes = ContactTypes::orderBy("name", "asc")->get();
         $roles = Role::orderBy("id", "asc")->get();
 
         return view('admin.pages.contact.index', [
@@ -74,13 +74,15 @@ class ContactController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:contacts,email',
             'phone' => 'required|string|max:20',
             'designation' => 'nullable|string|max:255',
             'organization' => 'nullable|string|max:255',
             'contact_type_id' => 'required|array',
             'contact_type_id.*' => 'exists:contact_types,id',
         ]);
+
+        $user = Auth::guard('admin')->user();
 
         $contact = Contact::create([
             'name' => $request->name,
@@ -89,13 +91,30 @@ class ContactController extends Controller
             'designation' => $request->designation,
             'organization' => $request->organization,
             'address' => $request->address,
-            'created_by' => Auth::guard('admin')->user()->fast_name . ' ' . Auth::guard('admin')->user()->last_name,
+            'created_by' => $user->fast_name . ' ' . $user->last_name,
         ]);
 
         $contact->contactTypes()->attach($request->contact_type_id);
 
-        return redirect()->route('contact.index')->with('success', 'Contact added successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Contact added successfully!',
+            'data' => [
+                'id' => $contact->id,
+                'name' => $contact->name,
+                'email' => $contact->email,
+                'phone' => $contact->phone,
+                'designation' => $contact->designation,
+                'organization' => $contact->organization,
+                'address' => $contact->address,
+                'created_by' => $contact->created_by,
+                'updated_by' => $contact->updated_by,
+                'created_at_human' => $contact->created_at->diffForHumans(),
+                'types' => $contact->contactTypes()->pluck('name')->toArray(),
+            ]
+        ]);
     }
+
 
     public function edit($id)
     {
