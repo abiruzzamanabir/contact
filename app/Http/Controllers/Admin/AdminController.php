@@ -11,6 +11,7 @@ use App\Mail\AccountInformationMail;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\Notification\AccountInformationNotification;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -206,4 +207,26 @@ class AdminController extends Controller
 
         return response()->json($admins);
     }
+
+public function getLastActive()
+{
+    $admins = Admin::with('role')
+        ->select('id', 'fast_name', 'last_name', 'photo', 'last_seen', 'role_id')
+        ->orderByDesc('last_seen')
+        ->get();
+
+    $now = Carbon::now();
+
+    $admins->transform(function ($admin) use ($now) {
+        $admin->full_name = trim("{$admin->fast_name} {$admin->last_name}");
+        $admin->image_url = $admin->photo
+            ? asset('storage/admins/' . $admin->photo)
+            : null;
+        $admin->is_online = $admin->last_seen && $now->diffInMinutes($admin->last_seen) <= 2;
+        return $admin;
+    });
+
+    return response()->json($admins);
+}
+
 }

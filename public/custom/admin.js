@@ -319,6 +319,77 @@ toastr.options = {
         // 🔁 Check every 10 seconds
         setInterval(updateLastSeen, 10000);
 
+        function loadLastActiveAdmins() {
+            $.ajax({
+                url: "/contact/admin-user/last/active",
+                method: "GET",
+                dataType: "json",
+                success: function (admins) {
+                    const container = $("#lastActiveAdmins");
+                    container.empty();
+
+                    if (admins.length > 0) {
+                        admins.forEach((admin) => {
+                            const name = admin.full_name ?? "Unknown";
+                            const role = admin.role?.name ?? "N/A";
+                            const imageUrl =
+                                admin.image_url &&
+                                admin.image_url.endsWith("avatar.png")
+                                    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                          name
+                                      )}&background=0D8ABC&color=fff`
+                                    : admin.image_url;
+
+                            const isOnline = admin.is_online
+                                ? `<span class="badge badge-success ml-2">Online</span>`
+                                : `<span class="badge badge-secondary ml-2">Offline</span>`;
+                            const lastSeen = admin.last_seen
+                                ? moment(admin.last_seen).fromNow()
+                                : "Never";
+
+                            const card = `
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-0 hover-shadow transition">
+                                        <div class="card-body d-flex align-items-center">
+                                            <div class="mr-3">
+                                                <img src="${imageUrl}" alt="${name}" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-0">${name} ${isOnline}</h5>
+                                                <small class="text-muted">
+                                                    Role: ${role}<br>
+                                                    Last Seen: ${lastSeen}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            container.append(card);
+                        });
+                    } else {
+                        container.html(`
+                            <div class="col-12 text-muted text-center">
+                                <i class="fa fa-info-circle"></i> No admins found.
+                            </div>
+                        `);
+                    }
+                },
+                error: function (xhr) {
+                    console.error(
+                        "Failed to load last active admins:",
+                        xhr.responseText
+                    );
+                },
+            });
+        }
+
+        // Initial load
+        loadLastActiveAdmins();
+
+        // Refresh every 10 seconds
+        setInterval(loadLastActiveAdmins, 1000); // changed from 1000ms (1s) to 10000ms (10s)
+
         $(".delete-form").submit(function (e) {
             let conf = confirm("Are you sure?");
 

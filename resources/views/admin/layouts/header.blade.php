@@ -111,9 +111,11 @@
            <li class="nav-item dropdown has-arrow">
                @if (Auth::guard('admin')->user()->photo == 'avatar.png')
                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                       <span class="user-img"><img class="rounded-circle"
-                               src="{{ url('public/storage/admins/avatar.png') }}" width="31"
-                               alt="{{ Auth::guard('admin')->user()->fast_name }}"></span>
+                       <span class="user-img">
+                           <img class="rounded-circle"
+                               src="https://ui-avatars.com/api/?name={{ urlencode(Auth::guard('admin')->user()->fast_name . ' ' . Auth::guard('admin')->user()->last_name) }}&background=0D8ABC&color=fff"
+                               width="31" alt="{{ Auth::guard('admin')->user()->fast_name }}">
+                       </span>
                    </a>
                @else
                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
@@ -127,7 +129,7 @@
                    <div class="user-header">
                        @if (Auth::guard('admin')->user()->photo == 'avatar.png')
                            <div class="avatar avatar-sm">
-                               <img src="{{ url('public/storage/admins/avatar.png') }}" alt="User Image"
+                               <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::guard('admin')->user()->fast_name . ' ' . Auth::guard('admin')->user()->last_name) }}&background=0D8ABC&color=fff"
                                    class="avatar-img rounded-circle">
                            </div>
                        @else

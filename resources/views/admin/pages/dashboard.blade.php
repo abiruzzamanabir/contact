@@ -42,6 +42,10 @@
 
         $hasAdminAccess = hasPermission('admin-user') || hasPermission('role') || hasPermission('permission');
         $hasContactAccess = hasPermission('contact');
+        $allAdmins = Admin::with('role') // eager load role
+            ->orderByDesc('last_seen') // latest activity first
+            ->get();
+
     @endphp
 
     @if ($hasAdminAccess || $hasContactAccess)
@@ -89,6 +93,15 @@
                         </div>
                     </a>
                 </div>
+            </div>
+            <div class="col-12 mt-4">
+                <h4 class="section-title">
+                    <i class="fa fa-clock-o icon-title"></i> Last Active Admins
+                </h4>
+            </div>
+
+            <div id="lastActiveAdmins" class="row">
+                {{-- Content will be loaded here via AJAX --}}
             </div>
         @endif
 

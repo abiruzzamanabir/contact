@@ -70,6 +70,7 @@ Route::group(['middleware' => 'route.redirect'], function () {
     Route::resource('contact-type', ContactTypeController::class);
     Route::post('/contact-type/ajax', [ContactTypeController::class, 'storeAjax'])->name('contact-type-ajax');
     Route::get('/admin-user/last/seen', [AdminController::class, 'getLastSeen'])->name('admin-user.last-seen');
+    Route::get('/admin-user/last/active', [AdminController::class, 'getLastActive'])->name('admin-user.last-active');
 });
 
 
