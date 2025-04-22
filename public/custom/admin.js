@@ -54,17 +54,17 @@ toastr.options = {
                             <td>${user.updated_by ?? ""}</td>
                             <td>${typesHtml}</td>
                             <td>
-                                <a class="btn btn-sm btn-warning" href="/contact/contact/${
+                                <a class="btn btn-sm btn-warning" href="/contact-management/contact/${
                                     user.id
                                 }/edit">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a class="btn btn-sm btn-danger" href="/contact/contact-trash/${
+                                <a class="btn btn-sm btn-danger" href="/contact-management/contact-trash/${
                                     user.id
                                 }">
                                     <i class="fa fa-trash"></i>
                                 </a>
-                                <a class="btn btn-sm btn-success" href="/contact/contact/${
+                                <a class="btn btn-sm btn-success" href="/contact-management/contact/${
                                     user.id
                                 }/logs" target="_blank">
                                     <i class="fa fa-file-text"></i>
@@ -139,7 +139,7 @@ toastr.options = {
                         <td>${res.name}</td>
                         <td>${res.created_at_human ?? ""}</td>
                         <td>
-                            <a class="btn btn-sm btn-warning" href="/contact/contact-type/${
+                            <a class="btn btn-sm btn-warning" href="/contact-management/contact-type/${
                                 res.id
                             }/edit">
                                 <i class="fa fa-edit"></i>
