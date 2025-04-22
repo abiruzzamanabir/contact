@@ -277,7 +277,7 @@ toastr.options = {
 
         function updateLastSeen() {
             $.ajax({
-                url: "/contact/admin-user/last/seen",
+                url: "/contact-management/admin-user/last/seen",
                 method: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -321,7 +321,7 @@ toastr.options = {
 
         function loadLastActiveAdmins() {
             $.ajax({
-                url: "/contact/admin-user/last/active",
+                url: "/contact-management/admin-user/last/active",
                 method: "GET",
                 dataType: "json",
                 success: function (admins) {
