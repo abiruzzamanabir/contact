@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ContactsTemplateExport;
 use App\Http\Controllers\Controller;
+use App\Imports\ContactsImport;
 use App\Models\ActivityLog;
 use App\Models\Contact;
 use App\Models\ContactTypes;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use OpenAI\Laravel\Facades\OpenAI;
 
 
@@ -246,5 +249,26 @@ class ContactController extends Controller
 
         // return view('admin.pages.contact.print', compact('contact', 'summary'));
         return view('admin.pages.contact.print', compact('contact'));
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new ContactsTemplateExport, 'contacts_import_template.xlsx');
+    }
+    public function showImportForm()
+    {
+        return view('admin.pages.contact.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        // Use queueImport to handle the import in the background
+        Excel::queueImport(new ContactsImport, $request->file('file'));
+
+        return back()->with('success', 'Contacts import started in the background. You will be notified when it finishes.');
     }
 }

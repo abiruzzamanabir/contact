@@ -69,7 +69,7 @@ toastr.options = {
                                 }/logs" target="_blank">
                                     <i class="fa fa-file-text"></i>
                                 </a>
-                                <a class="btn btn-sm btn-primary" href="/contact/contact/${
+                                <a class="btn btn-sm btn-primary" href="/contact-management/contact/${
                                     user.id
                                 }/print" target="_blank">
                                     <i class="fa fa-print"></i>
@@ -144,7 +144,7 @@ toastr.options = {
                             }/edit">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <form class="d-inline delete-form" method="POST" action="/contact/contact-type/${
+                            <form class="d-inline delete-form" method="POST" action="/contact-management/contact-type/${
                                 res.id
                             }">
                                 <input type="hidden" name="_token" value="${token}">
@@ -195,7 +195,7 @@ toastr.options = {
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `/contact/contact-type/${id}`,
+                        url: `/contact-management/contact-type/${id}`,
                         method: "POST",
                         data: {
                             _token: token,
@@ -247,7 +247,7 @@ toastr.options = {
             let token = $('input[name="_token"]').val();
 
             $.ajax({
-                url: `/contact/contact-type/${id}`,
+                url: `/contact-management/contact-type/${id}`,
                 method: "POST",
                 data: {
                     _token: token,

@@ -53,6 +53,11 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('contacts-export', function () {
         return Excel::download(new ContactsExport(), 'all_contacts.xlsx');
     })->name('contacts.export.all');
+    Route::get('/download-template', [ContactController::class, 'downloadTemplate'])->name('contacts.downloadTemplate');
+
+
+    Route::get('/contacts/import', [ContactController::class, 'showImportForm'])->name('contacts.import.form');
+    Route::post('/contacts/import', [ContactController::class, 'import'])->name('contacts.import');
 
     Route::get('contacts-export/{contactTypeId}', function ($contactTypeId) {
         $searchQuery = request()->get('search'); // Corrected here

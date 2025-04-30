@@ -62,7 +62,22 @@
                     </li>
                 @endif
 
-                @if (hasPermission('contacts-export'))
+                @if (hasPermission('contact-import'))
+                    <li class="menu-title"><span>Import Option</span></li>
+                    <li class="submenu">
+                        <a href="#"><i class="fa fa-user-shield"></i> <span>Import</span> <span
+                                class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            <li>
+                                <a href="{{ route('contacts.import.form') }}"
+                                    class="{{ request()->routeIs('admin-user.index') ? 'active' : '' }}">
+                                    Import From Excel
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+                @if (hasPermission('contact-export'))
                     <li class="menu-title"><span>Export Option</span></li>
                     <li class="submenu">
                         <a href="#"><i class="fa fa-user-shield"></i> <span>Export</span> <span

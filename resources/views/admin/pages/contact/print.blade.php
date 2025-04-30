@@ -225,8 +225,10 @@
         @endif
 
         <div class="qr-code-container mt-4 text-center">
-            <iframe src="https://maps.google.com/maps?q={{ urlencode($contact->address) }}&output=embed" width="100%"
-                height="400" frameborder="0"></iframe>
+            @if ($contact->address)
+                <iframe src="https://maps.google.com/maps?q={{ urlencode($contact->address) }}&output=embed"
+                    width="100%" height="400" frameborder="0"></iframe>
+            @endif
 
             <div class="d-flex flex-wrap justify-content-center mt-4">
                 <div class="mx-2">

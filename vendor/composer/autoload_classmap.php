@@ -34,6 +34,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Http\\Requests\\StorecontactRequest' => $baseDir . '/app/Http/Requests/StorecontactRequest.php',
     'App\\Http\\Requests\\UpdatecontactRequest' => $baseDir . '/app/Http/Requests/UpdatecontactRequest.php',
+    'App\\Imports\\ContactsImport' => $baseDir . '/app/Imports/ContactsImport.php',
     'App\\Mail\\AccountInformationMail' => $baseDir . '/app/Mail/AccountInformationMail.php',
     'App\\Mail\\NewDeviceLoginAlert' => $baseDir . '/app/Mail/NewDeviceLoginAlert.php',
     'App\\Mail\\PasswordChangeSuccess' => $baseDir . '/app/Mail/PasswordChangeSuccess.php',

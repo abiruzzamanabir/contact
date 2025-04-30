@@ -630,6 +630,7 @@ class ComposerStaticInit61d054dc67f1d365c72e2a9623feb244
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Requests\\StorecontactRequest' => __DIR__ . '/../..' . '/app/Http/Requests/StorecontactRequest.php',
         'App\\Http\\Requests\\UpdatecontactRequest' => __DIR__ . '/../..' . '/app/Http/Requests/UpdatecontactRequest.php',
+        'App\\Imports\\ContactsImport' => __DIR__ . '/../..' . '/app/Imports/ContactsImport.php',
         'App\\Mail\\AccountInformationMail' => __DIR__ . '/../..' . '/app/Mail/AccountInformationMail.php',
         'App\\Mail\\NewDeviceLoginAlert' => __DIR__ . '/../..' . '/app/Mail/NewDeviceLoginAlert.php',
         'App\\Mail\\PasswordChangeSuccess' => __DIR__ . '/../..' . '/app/Mail/PasswordChangeSuccess.php',
