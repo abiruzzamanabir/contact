@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\ContactsTemplateExport;
-use App\Http\Controllers\Controller;
-use App\Imports\ContactsImport;
-use App\Models\ActivityLog;
-use App\Models\Contact;
-use App\Models\ContactTypes;
 use App\Models\Role;
+use App\Models\Contact;
+use App\Models\ActivityLog;
+use App\Models\ContactTypes;
 use Illuminate\Http\Request;
+use App\Imports\ContactsImport;
+use OpenAI\Laravel\Facades\OpenAI;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use OpenAI\Laravel\Facades\OpenAI;
-
+use App\Jobs\SendImportCompletedEmail;
+use App\Exports\ContactsTemplateExport;
 
 class ContactController extends Controller
 {
@@ -266,8 +266,15 @@ class ContactController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
-        // Use queueImport to handle the import in the background
         Excel::queueImport(new ContactsImport, $request->file('file'));
+
+        // Prepare data for the email
+        $user = auth('admin')->user();
+        $ip = $request->ip();
+        $time = now();
+
+        // Dispatch the job with necessary data
+        SendImportCompletedEmail::dispatch($user, $ip, $time);
 
         return back()->with('success', 'Contacts import started in the background. You will be notified when it finishes.');
     }

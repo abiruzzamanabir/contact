@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         Admin::create([
             'fast_name' => 'Provider',
             'last_name' => '',
-            'email' => 'Provider@gmail.com',
+            'email' => 'abiruzzamanabir17@gmail.com',
             'cell' => '01763872277',
             'username' => 'provider',
             'password' => Hash::make('12345678'),
@@ -58,6 +58,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Contact Export',
             'slug' => 'contact-export',
         ]);
+        Permission::create([
+            'name' => 'Contact Import',
+            'slug' => 'contact-import',
+        ]);
 
 
 
@@ -65,12 +69,7 @@ class DatabaseSeeder extends Seeder
         Role::create([
             'name' => 'Super Admin',
             'slug' => 'super-admin',
-            'permission' => '["admin-user","role","permission","contact","contact-type","contact-export"]',
-        ]);
-        Role::create([
-            'name' => 'Admin',
-            'slug' => 'admin',
-            'permission' => '[]',
+            'permission' => '["admin-user","role","permission","contact","contact-type","contact-export","contact-import"]',
         ]);
         Role::create([
             'name' => 'Student',
